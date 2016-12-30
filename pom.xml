@@ -10,6 +10,8 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>diamond-web</module>
+        <module>diamond-core</module>
+        <module>diamond-client</module>
     </modules>
 
 
