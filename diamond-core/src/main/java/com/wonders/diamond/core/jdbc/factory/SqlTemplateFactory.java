@@ -26,6 +26,7 @@ public class SqlTemplateFactory {
                     return sqlTemplate;
                 }
                 sqlTemplate = new SqlTemplateImpl(dataSource);
+                return sqlTemplate;
             }
         }
         return null;
