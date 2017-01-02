@@ -1,5 +1,6 @@
 package com.wonders.diamond.core.curator;
 
+import com.wonders.diamond.core.instance.DiamondInstance;
 import org.apache.curator.framework.CuratorFramework;
 
 /**
@@ -11,5 +12,15 @@ public class CuratorHandlerImpl implements CuratorHandler{
 
     public CuratorHandlerImpl(CuratorFramework client){
         this.client = client;
+    }
+
+    @Override
+    public void registerDiamondClient(DiamondInstance diamondInstance) {
+
+    }
+
+    @Override
+    public void removeDiamondClient(DiamondInstance diamondInstance) {
+
     }
 }
