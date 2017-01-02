@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.UUID;
 
