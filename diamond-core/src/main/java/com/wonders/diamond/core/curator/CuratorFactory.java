@@ -17,16 +17,16 @@ public class CuratorFactory {
 
     /**
      * 单例创建zookeeper处理对象
-     * @param zkhost
+     * @param zkHost
      * @param path
      * @return
      */
-     public static CuratorHandler create(String zkhost, String path){
+     public static CuratorHandler create(String zkHost, String path){
          if(handler==null){
              synchronized (CuratorFactory.class){
                  if(handler!=null)
                      return handler;
-                 handler = new CuratorHandlerImpl(createClient(zkhost,path));
+                 handler = new CuratorHandlerImpl(createClient(zkHost,path));
                  return handler;
              }
          }
@@ -35,18 +35,19 @@ public class CuratorFactory {
 
     /**
      * 创建curator client对象
-     * @param zkhost
+     * @param zkHost
      * @param path
      * @return
      */
-    private static CuratorFramework createClient(String zkhost, String path){
+    private static CuratorFramework createClient(String zkHost, String path){
         ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, Integer.MAX_VALUE);
         return CuratorFrameworkFactory.builder()
-                .connectString(zkhost)
+                .connectString(zkHost)
                 .retryPolicy(retryPolicy).connectionTimeoutMs(3000)
                 .sessionTimeoutMs(2000)
                 .canBeReadOnly(true)
                 .namespace(path)
                 .build();
     }
+
 }
