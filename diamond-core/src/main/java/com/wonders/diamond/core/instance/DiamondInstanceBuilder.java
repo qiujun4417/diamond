@@ -8,7 +8,7 @@ public class DiamondInstanceBuilder {
 
     private static DiamondInstance instance;
 
-    public static DiamondInstance create(){
+    public static DiamondInstance builder(){
         instance = new DiamondInstance();
         return instance;
     }

@@ -1,5 +1,7 @@
 package com.wonders.diamond.core.instance;
 
+import com.wonders.diamond.core.curator.ServiceStatus;
+
 /**
  * Created by ningyang on 2017/1/1.
  * @author ningyang
@@ -12,6 +14,7 @@ public class DiamondInstance {
     private Integer port;
     private long registerTime;
     private String type;
+    private ServiceStatus status;
 
     public String getName() {
         return name;
@@ -59,5 +62,13 @@ public class DiamondInstance {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public ServiceStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ServiceStatus status) {
+        this.status = status;
     }
 }
