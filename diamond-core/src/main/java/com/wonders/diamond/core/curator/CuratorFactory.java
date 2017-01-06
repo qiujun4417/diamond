@@ -22,12 +22,12 @@ public class CuratorFactory {
      * @param path
      * @return
      */
-     public static CuratorHandler create(String zkHost, String path, ServiceType serviceType){
+     public static CuratorHandler create(String zkHost, String path){
          if(handler==null){
              synchronized (CuratorFactory.class){
                  if(handler!=null)
                      return handler;
-                 handler = new CuratorHandlerImpl(createClient(zkHost,path), new DiamondContext(), serviceType);
+                 handler = new CuratorHandlerImpl(createClient(zkHost,path));
                  return handler;
              }
          }

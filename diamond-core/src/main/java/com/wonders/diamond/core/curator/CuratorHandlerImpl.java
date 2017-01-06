@@ -13,6 +13,8 @@ public class CuratorHandlerImpl implements CuratorHandler{
 
     private DiamondContext context;
 
+    private DiamondServices diamondServices;
+
     public CuratorHandlerImpl(CuratorFramework client) {
         this.client = client;
     }
