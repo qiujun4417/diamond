@@ -22,7 +22,7 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery{
         this.client = client;
         this.instance = instance;
     }
-    
+
     @Override
     public void start() {
 
