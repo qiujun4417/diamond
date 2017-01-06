@@ -7,7 +7,7 @@ import com.wonders.diamond.core.instance.DiamondInstance;
  */
 public interface CuratorHandler {
 
-    void registerDiamondClient(DiamondInstance diamondInstance);
+    void addInstance(DiamondInstance diamondInstance);
 
-    void removeDiamondClient(DiamondInstance diamondInstance);
+    void removeInstance(DiamondInstance diamondInstance);
 }

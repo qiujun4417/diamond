@@ -45,7 +45,7 @@ public class DBTest {
         SqlTemplate sqlTemplate = SqlTemplateFactory.create(druidDataSource);
         InsertSql insertSql = new InsertSql(sqlTemplate);
         String studentId = uuid();
-        String teacherId = "40288188591c6b6901591c6b6c5e0003";
+        String teacherId = "8a8195e959254287015925428f48000b";
         int result = insertSql.insert("tb_student").columns("id","age","class_name","student_name",
                 "teacher_id").values(studentId, 25, "高三(4)班",
                 "李老师",teacherId).doInsert();
