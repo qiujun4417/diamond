@@ -13,13 +13,15 @@ import java.io.IOException;
 import java.net.SocketException;
 
 /**
+ *
  * Created by nick on 2017/1/5.
+ *
  */
 public class DiamondServices implements Closeable{
 
-    private DiamondInstance diamondInstance;
+    private DiamondInstance instance;
 
-    private DiamondContext diamondContext;
+    private DiamondContext context;
 
     private ServiceDiscovery serviceDiscovery;
 
@@ -27,11 +29,12 @@ public class DiamondServices implements Closeable{
 
     private final String basePath = "com.wonders.diamond";
 
-    public DiamondServices(CuratorFramework client, ServiceType serviceType) throws SocketException {
+    public DiamondServices(CuratorFramework client, ServiceType serviceType, DiamondContext context) throws SocketException {
 
         this.client = client;
+        this.context = context;
 
-        DiamondInstance instance = new DiamondInstanceBuilder()
+        instance = new DiamondInstanceBuilder()
                 .builder()
                 .id(IDGen.uuid())
                 .name(serviceType.name())
@@ -41,7 +44,8 @@ public class DiamondServices implements Closeable{
 
         serviceDiscovery = ServiceDiscoveryBuilder.builder(DiamondInstance.class)
                 .basePath(basePath)
-                .client(client)
+                .client(this.client)
+                .context(this.context)
                 .instance(instance)
                 .build();
 

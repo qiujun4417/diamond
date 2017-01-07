@@ -3,14 +3,19 @@ package com.wonders.diamond.core.curator;
 import com.wonders.diamond.core.context.DiamondContext;
 import com.wonders.diamond.core.instance.DiamondInstance;
 import com.wonders.diamond.core.serializer.JsonInstanceSerializer;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.utils.ThreadUtils;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Collection;
+
 
 /**
  * Created by ningyang on 2017/1/4.
@@ -23,7 +28,7 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
 
     private final DiamondInstance instance;
 
-    private final DiamondContext context = new DiamondContext();
+    private DiamondContext context;
 
     private final String basePath;
 
@@ -35,7 +40,7 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
             try
             {
                 log.debug("Re-registering due to reconnection");
-//                    reRegisterServices();
+                    registerService();
             }
             catch ( Exception e )
             {
@@ -55,7 +60,53 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
 
     @Override
     public void start() {
+        registerService();
+        client.getConnectionStateListenable().addListener(connectionStateListener);
+    }
 
+
+    private void registerService(){
+
+        if(instance!=null){
+            synchronized (this){
+                try {
+                    internalRegisterService(instance);
+                } catch (IOException e) {
+                    log.error(ExceptionUtils.getStackTrace(e));
+                } catch (Exception e) {
+                    log.error(ExceptionUtils.getStackTrace(e));
+                }
+            }
+        }
+    }
+
+    private String pathForInstance(){
+        return basePath + "/" + instance.getType() + "/" +
+                instance.getName() + "/" + instance.getId();
+    }
+
+    protected void internalRegisterService(DiamondInstance instance) throws Exception {
+        String path = pathForInstance();
+        byte[] data = serializer.serialize(instance);
+        final int MAX_TRIES = 2;
+        boolean isDone = false;
+        for ( int i = 0; !isDone && (i < MAX_TRIES); ++i )
+        {
+            try
+            {
+                CreateMode mode = CreateMode.EPHEMERAL_SEQUENTIAL;
+
+                client.create().creatingParentContainersIfNeeded().withMode(mode).forPath(path, data);
+                isDone = true;
+            }
+            catch ( KeeperException.NodeExistsException e )
+            {
+                client.delete().forPath(path);  // must delete then re-create so that watchers fire
+
+            } catch (Exception e2) {
+                log.error("error ",e2);
+            }
+        }
     }
 
     @Override
@@ -86,5 +137,13 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
     @Override
     public Collection<DiamondInstance> listAll() {
         return null;
+    }
+
+    public DiamondContext getContext() {
+        return context;
+    }
+
+    public void setDiamondContext(DiamondContext context){
+        this.context = context;
     }
 }

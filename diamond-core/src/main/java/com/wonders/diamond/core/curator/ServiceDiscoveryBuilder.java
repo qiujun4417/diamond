@@ -1,5 +1,6 @@
 package com.wonders.diamond.core.curator;
 
+import com.wonders.diamond.core.context.DiamondContext;
 import com.wonders.diamond.core.instance.DiamondInstance;
 import com.wonders.diamond.core.serializer.JsonInstanceSerializer;
 import org.apache.curator.framework.CuratorFramework;
@@ -14,6 +15,7 @@ public class ServiceDiscoveryBuilder<T> {
     private String basePath;
     private DiamondInstance instance;
     private Class<T> payloadClass;
+    private DiamondContext context;
 
     public static <T> ServiceDiscoveryBuilder<T> builder(Class<T> paloadClass){
 
@@ -41,6 +43,11 @@ public class ServiceDiscoveryBuilder<T> {
 
     public ServiceDiscoveryBuilder<T> instance(DiamondInstance instance){
         this.instance = instance;
+        return this;
+    }
+
+    public ServiceDiscoveryBuilder<T> context(DiamondContext context){
+        this.context = context;
         return this;
     }
 

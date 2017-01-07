@@ -1,6 +1,7 @@
 package com.wonders.diamond.core.context;
 
 import com.wonders.diamond.core.instance.DiamondInstance;
+import org.apache.curator.framework.CuratorFramework;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,10 @@ import java.util.List;
  */
 public class DiamondContext {
 
-    public DiamondContext(){
+    private CuratorFramework client;
+
+    public DiamondContext(CuratorFramework client){
+        this.client = client;
         this.clints = new ArrayList<>();
         this.webs = new ArrayList<>();
     }

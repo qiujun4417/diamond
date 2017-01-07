@@ -1,5 +1,6 @@
 package com.wonders.diamond.core.curator;
 
+import com.wonders.diamond.core.context.DiamondContext;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -27,7 +28,9 @@ public class CuratorFactory {
              synchronized (CuratorFactory.class){
                  if(handler!=null)
                      return handler;
-                 handler = new CuratorHandlerImpl(createClient(zkHost), serviceType);
+                 CuratorFramework client = createClient(zkHost);
+                 DiamondContext context = new DiamondContext(client);
+                 handler = new CuratorHandlerImpl(client, serviceType, context);
                  return handler;
              }
          }

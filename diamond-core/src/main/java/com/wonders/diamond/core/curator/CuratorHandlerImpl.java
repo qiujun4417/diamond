@@ -1,7 +1,6 @@
 package com.wonders.diamond.core.curator;
 
 import com.wonders.diamond.core.context.DiamondContext;
-import com.wonders.diamond.core.instance.DiamondInstance;
 import com.wonders.diamond.core.utils.CloseableUtils;
 import org.apache.curator.framework.CuratorFramework;
 
@@ -20,10 +19,11 @@ public class CuratorHandlerImpl implements CuratorHandler{
 
     private ServiceType serviceType;
 
-    public CuratorHandlerImpl(CuratorFramework client, ServiceType serviceType) throws SocketException {
+    public CuratorHandlerImpl(CuratorFramework client, ServiceType serviceType, DiamondContext context) throws SocketException {
         this.client = client;
+        this.context = context;
         this.serviceType = serviceType;
-        diamondService = new DiamondServices(client, serviceType);
+        diamondService = new DiamondServices(this.client, this.serviceType, this.context);
     }
 
     @Override
@@ -34,6 +34,11 @@ public class CuratorHandlerImpl implements CuratorHandler{
     @Override
     public void removeInstance() {
         CloseableUtils.closeQuietly(diamondService);
+    }
+
+    @Override
+    public DiamondContext context() {
+        return context;
     }
 
 }
