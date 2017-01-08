@@ -52,7 +52,7 @@ public class DiamondInstanceBuilder {
     }
 
     public DiamondInstanceBuilder name(String name){
-        instance.setId(name);
+        instance.setName(name);
         return this;
     }
 

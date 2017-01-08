@@ -40,11 +40,10 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
             try
             {
                 log.debug("Re-registering due to reconnection");
-                    registerService();
+                registerService();
             }
             catch ( Exception e )
             {
-                ThreadUtils.checkInterrupted(e);
                 log.error("Could not re-register instances after reconnection", e);
             }
         }
@@ -81,8 +80,7 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
     }
 
     private String pathForInstance(){
-        return basePath + "/" + instance.getType() + "/" +
-                instance.getName() + "/" + instance.getId();
+        return basePath + "/" + instance.getType() + "/" + instance.getName();
     }
 
     protected void internalRegisterService(DiamondInstance instance) throws Exception {
@@ -96,8 +94,9 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
             {
                 CreateMode mode = CreateMode.EPHEMERAL_SEQUENTIAL;
 
-                client.create().creatingParentContainersIfNeeded().withMode(mode).forPath(path, data);
+                client.create().creatingParentsIfNeeded().withMode(mode).forPath(path, data);
                 isDone = true;
+
             }
             catch ( KeeperException.NodeExistsException e )
             {

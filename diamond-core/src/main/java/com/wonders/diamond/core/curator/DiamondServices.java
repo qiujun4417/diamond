@@ -27,7 +27,7 @@ public class DiamondServices implements Closeable{
 
     private CuratorFramework client;
 
-    private final String basePath = "com.wonders.diamond";
+    private final String basePath = "/com.wonders.diamond";
 
     public DiamondServices(CuratorFramework client, ServiceType serviceType, DiamondContext context) throws SocketException {
 
@@ -38,6 +38,7 @@ public class DiamondServices implements Closeable{
                 .builder()
                 .id(IDGen.uuid())
                 .name(serviceType.name())
+                .type("diamond" + serviceType.name())
                 .port(100)
                 .registerTime(System.currentTimeMillis())
                 .build();

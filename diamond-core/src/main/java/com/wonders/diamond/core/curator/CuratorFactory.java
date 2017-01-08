@@ -12,11 +12,11 @@ import java.net.SocketException;
  */
 public class CuratorFactory {
 
-     private static CuratorHandler handler;
+    private static CuratorHandler handler;
 
-     private CuratorFactory(){
+    private CuratorFactory(){
 
-     }
+    }
 
     /**
      * 单例创建zookeeper处理对象
@@ -44,12 +44,15 @@ public class CuratorFactory {
      */
     private static CuratorFramework createClient(String zkHost){
         ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, Integer.MAX_VALUE);
-        return CuratorFrameworkFactory.builder()
+        CuratorFramework client = CuratorFrameworkFactory.builder()
                 .connectString(zkHost)
                 .retryPolicy(retryPolicy).connectionTimeoutMs(3000)
                 .sessionTimeoutMs(2000)
+                .namespace("myDiamond")
                 .canBeReadOnly(true)
                 .build();
+        client.start();
+        return client;
     }
 
 }
