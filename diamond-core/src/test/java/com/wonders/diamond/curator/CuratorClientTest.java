@@ -18,11 +18,12 @@ public class CuratorClientTest {
 
     @Before
     public void setup() throws SocketException {
-        curatorHandler = CuratorFactory.create("127.0.0.1:2181", ServiceType.CLIENT);
+        curatorHandler = CuratorFactory.create("127.0.0.1:2181", ServiceType.CLIENT, 100);
     }
 
     @Test
     public void registerServerTest(){
         curatorHandler.addInstance();
     }
+
 }

@@ -3,7 +3,6 @@ package com.wonders.diamond.core.curator;
 import com.wonders.diamond.core.context.DiamondContext;
 import com.wonders.diamond.core.instance.DiamondInstance;
 import com.wonders.diamond.core.instance.DiamondInstanceBuilder;
-import com.wonders.diamond.core.serializer.JsonInstanceSerializer;
 import com.wonders.diamond.core.utils.CloseableUtils;
 import com.wonders.diamond.core.utils.IDGen;
 import org.apache.curator.framework.CuratorFramework;
@@ -27,19 +26,17 @@ public class DiamondServices implements Closeable{
 
     private CuratorFramework client;
 
-    private final String basePath = "/com.wonders.diamond";
+    private final String basePath = "/discovery/myDiamond";
 
-    public DiamondServices(CuratorFramework client, ServiceType serviceType, DiamondContext context) throws SocketException {
-
+    public DiamondServices(CuratorFramework client, ServiceType serviceType, DiamondContext context, int port) throws SocketException {
         this.client = client;
         this.context = context;
-
         instance = new DiamondInstanceBuilder()
                 .builder()
                 .id(IDGen.uuid())
                 .name(serviceType.name())
                 .type("diamond" + serviceType.name())
-                .port(100)
+                .port(port)
                 .registerTime(System.currentTimeMillis())
                 .build();
 
@@ -49,7 +46,6 @@ public class DiamondServices implements Closeable{
                 .context(this.context)
                 .instance(instance)
                 .build();
-
     }
 
     public void start(){

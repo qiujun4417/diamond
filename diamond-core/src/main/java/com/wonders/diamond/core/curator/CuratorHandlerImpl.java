@@ -19,11 +19,11 @@ public class CuratorHandlerImpl implements CuratorHandler{
 
     private ServiceType serviceType;
 
-    public CuratorHandlerImpl(CuratorFramework client, ServiceType serviceType, DiamondContext context) throws SocketException {
+    public CuratorHandlerImpl(CuratorFramework client, ServiceType serviceType, DiamondContext context, int servicePort) throws SocketException {
         this.client = client;
         this.context = context;
         this.serviceType = serviceType;
-        diamondService = new DiamondServices(this.client, this.serviceType, this.context);
+        diamondService = new DiamondServices(this.client, this.serviceType, this.context, servicePort);
     }
 
     @Override

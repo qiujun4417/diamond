@@ -3,6 +3,7 @@ package com.wonders.diamond.core.curator;
 import com.wonders.diamond.core.instance.DiamondInstance;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -15,13 +16,13 @@ public interface ServiceDiscovery<T> extends Closeable{
 
     public void close();
 
-    public void register(DiamondInstance instance);
+    public void register(DiamondInstance instance) throws Exception;
 
-    public void update(DiamondInstance instance);
+    public void update(DiamondInstance instance) throws Exception;
 
     public void unregister(DiamondInstance instance);
 
-    public DiamondInstance queryInstance(String name, String id);
+    public DiamondInstance queryInstance(String name, String id) throws Exception;
 
     public Collection<DiamondInstance> listAll();
 }

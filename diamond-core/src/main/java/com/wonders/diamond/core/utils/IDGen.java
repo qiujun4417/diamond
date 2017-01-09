@@ -8,6 +8,6 @@ import java.util.UUID;
 public class IDGen {
 
     public static String uuid(){
-        return UUID.randomUUID().toString().replace("-","");
+        return UUID.randomUUID().toString();
     }
 }

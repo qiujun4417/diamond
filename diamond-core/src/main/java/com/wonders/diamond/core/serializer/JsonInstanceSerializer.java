@@ -24,7 +24,7 @@ public class JsonInstanceSerializer<T> {
         this.type = mapper.getTypeFactory().constructType(this.payloadClass);
     }
 
-    public Class<T> deserialize(byte[] bytes) throws IOException {
+    public DiamondInstance deserialize(byte[] bytes) throws IOException {
         return mapper.readValue(bytes, type);
     }
 

@@ -23,14 +23,14 @@ public class CuratorFactory {
      * @param zkHost
      * @return
      */
-     public static CuratorHandler create(String zkHost, ServiceType serviceType) throws SocketException {
+     public static CuratorHandler create(String zkHost, ServiceType serviceType, int servicePort) throws SocketException {
          if(handler==null){
              synchronized (CuratorFactory.class){
                  if(handler!=null)
                      return handler;
                  CuratorFramework client = createClient(zkHost);
                  DiamondContext context = new DiamondContext(client);
-                 handler = new CuratorHandlerImpl(client, serviceType, context);
+                 handler = new CuratorHandlerImpl(client, serviceType, context, servicePort);
                  return handler;
              }
          }
@@ -44,13 +44,13 @@ public class CuratorFactory {
      */
     private static CuratorFramework createClient(String zkHost){
         ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, Integer.MAX_VALUE);
-        CuratorFramework client = CuratorFrameworkFactory.builder()
-                .connectString(zkHost)
-                .retryPolicy(retryPolicy).connectionTimeoutMs(3000)
-                .sessionTimeoutMs(2000)
-                .namespace("myDiamond")
-                .canBeReadOnly(true)
-                .build();
+//        CuratorFramework client = CuratorFrameworkFactory.builder()
+//                .connectString(zkHost)
+//                .retryPolicy(retryPolicy).connectionTimeoutMs(3000)
+//                .sessionTimeoutMs(2000)
+//                .canBeReadOnly(true)
+//                .build();
+        CuratorFramework client = CuratorFrameworkFactory.newClient(zkHost, 2000, 3000, retryPolicy);
         client.start();
         return client;
     }

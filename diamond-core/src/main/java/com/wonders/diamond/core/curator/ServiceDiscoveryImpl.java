@@ -7,7 +7,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
-import org.apache.curator.utils.ThreadUtils;
+import org.apache.curator.utils.ZKPaths;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
@@ -79,12 +79,12 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
         }
     }
 
-    private String pathForInstance(){
-        return basePath + "/" + instance.getType() + "/" + instance.getName();
+    private String pathForInstance(DiamondInstance instance){
+        return ZKPaths.makePath(ZKPaths.makePath(basePath, instance.getName()), instance.getId());
     }
 
     protected void internalRegisterService(DiamondInstance instance) throws Exception {
-        String path = pathForInstance();
+        String path = pathForInstance(instance);
         byte[] data = serializer.serialize(instance);
         final int MAX_TRIES = 2;
         boolean isDone = false;
@@ -92,9 +92,10 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
         {
             try
             {
-                CreateMode mode = CreateMode.EPHEMERAL_SEQUENTIAL;
+                CreateMode mode = CreateMode.EPHEMERAL;
 
-                client.create().creatingParentsIfNeeded().withMode(mode).forPath(path, data);
+                client.create().creatingParentContainersIfNeeded().withMode(mode).forPath(path, data);
+
                 isDone = true;
 
             }
@@ -108,29 +109,43 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
         }
     }
 
+    private void internalDeleteService(DiamondInstance instance){
+        String path = pathForInstance(instance);
+        try {
+            client.delete().guaranteed().forPath(path);
+        } catch (Exception e) {
+            log.error("unregister service error ", e);
+        }
+    }
+
     @Override
     public void close() {
-
+        if(instance!=null){
+            unregister(instance);
+        }
     }
 
     @Override
-    public void register(DiamondInstance instance) {
-
+    public void register(DiamondInstance instance) throws Exception {
+        internalRegisterService(instance);
     }
 
     @Override
-    public void update(DiamondInstance instance) {
-
+    public void update(DiamondInstance instance) throws Exception {
+        String path = pathForInstance(instance);
+        byte[] data = serializer.serialize(instance);
+        client.setData().forPath(path, data);
     }
 
     @Override
     public void unregister(DiamondInstance instance) {
-
+        internalDeleteService(instance);
     }
 
     @Override
-    public DiamondInstance queryInstance(String name, String id) {
-        return null;
+    public DiamondInstance queryInstance(String name, String id) throws Exception {
+        String path = ZKPaths.makePath(ZKPaths.makePath(basePath, name), id);
+        return serializer.deserialize(client.getData().forPath(path));
     }
 
     @Override
