@@ -94,7 +94,7 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
             {
                 CreateMode mode = CreateMode.EPHEMERAL;
 
-                client.create().creatingParentContainersIfNeeded().withMode(mode).forPath(path, data);
+                client.create().creatingParentsIfNeeded().withMode(mode).forPath(path, data);
 
                 isDone = true;
 
