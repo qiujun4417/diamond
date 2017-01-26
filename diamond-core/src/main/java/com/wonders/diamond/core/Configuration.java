@@ -9,7 +9,7 @@ public class Configuration {
 
     private App app;
     private String profile;
-    private String key;
+    private String configKey;
     private String value;
     private Date createTime;
     private Date updateTime;
@@ -22,12 +22,12 @@ public class Configuration {
         this.profile = profile;
     }
 
-    public String getKey() {
-        return key;
+    public String getConfigKey() {
+        return configKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setConfigKey(String configKey) {
+        this.configKey = configKey;
     }
 
     public String getValue() {

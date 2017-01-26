@@ -98,6 +98,7 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
 
                 isDone = true;
 
+                System.out.println("register diamond service on path " + path);
             }
             catch ( KeeperException.NodeExistsException e )
             {

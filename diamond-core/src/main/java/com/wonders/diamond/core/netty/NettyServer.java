@@ -10,6 +10,7 @@ import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ public class NettyServer {
         }else {
             bossGroup = new NioEventLoopGroup(1);
             workerGroup = new NioEventLoopGroup(processorNum*2, threadFactory, SelectorProvider.provider());
+            bootstrap.channel(NioServerSocketChannel.class);
         }
         bootstrap.group(bossGroup, workerGroup);
         bootstrap.childHandler(new DiamondNettyChannelHandler(requestHandler));
