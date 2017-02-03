@@ -1,5 +1,6 @@
 package com.wonders.diamond.core.netty;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.base.StandardSystemProperty;
 import com.wonders.diamond.core.netty.dispatcher.DiamondRequestDispatcher;
 import com.wonders.diamond.core.netty.exception.NettyServerStartUpException;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.nio.channels.spi.SelectorProvider;
+import java.sql.SQLException;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -59,5 +61,26 @@ public class NettyServer {
             throw new NettyServerStartUpException("start netty server error", future.cause());
         }
         logger.info("start netty server success on port " + serverPort);
+    }
+
+    public static void main(String[] args) throws SQLException {
+
+        DruidDataSource druidDataSource = new DruidDataSource();
+        druidDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        druidDataSource.setUrl("jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull&useSSL=false");
+        druidDataSource.setUsername("root");
+        druidDataSource.setPassword("3202547c");
+        druidDataSource.setFilters("stat");
+        druidDataSource.setInitialSize(10);
+        druidDataSource.setMinIdle(1);
+        druidDataSource.setMaxActive(200);
+        druidDataSource.setMaxWait(60000L);
+        druidDataSource.setTimeBetweenEvictionRunsMillis(60000L);
+        druidDataSource.setMinEvictableIdleTimeMillis(300000L);
+        druidDataSource.setValidationQuery("SELECT 1");
+        druidDataSource.setTestWhileIdle(true);
+        druidDataSource.setTestOnBorrow(true);
+        druidDataSource.setTestOnReturn(false);
+        initNettyServer(3397, druidDataSource);
     }
 }

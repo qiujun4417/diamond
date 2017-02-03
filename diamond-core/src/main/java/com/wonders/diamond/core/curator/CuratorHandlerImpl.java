@@ -1,6 +1,7 @@
 package com.wonders.diamond.core.curator;
 
 import com.wonders.diamond.core.context.DiamondContext;
+import com.wonders.diamond.core.netty.DiamondService;
 import com.wonders.diamond.core.utils.CloseableUtils;
 import org.apache.curator.framework.CuratorFramework;
 
@@ -39,6 +40,11 @@ public class CuratorHandlerImpl implements CuratorHandler{
     @Override
     public DiamondContext context() {
         return context;
+    }
+
+    @Override
+    public DiamondServices diamondService() {
+        return diamondService;
     }
 
 }

@@ -22,7 +22,7 @@ public class DiamondContext {
 
     private List<DiamondInstance> clints;
 
-    private List<DiamondContext> webs;
+    private List<DiamondInstance> webs;
 
     public List<DiamondInstance> getClints() {
         return clints;
@@ -32,11 +32,11 @@ public class DiamondContext {
         this.clints = clints;
     }
 
-    public List<DiamondContext> getWebs() {
+    public List<DiamondInstance> getWebs() {
         return webs;
     }
 
-    public void setWebs(List<DiamondContext> webs) {
+    public void setWebs(List<DiamondInstance> webs) {
         this.webs = webs;
     }
 }

@@ -1,8 +1,20 @@
 package com.wonders.diamond.core.init;
 
 import com.wonders.diamond.core.curator.CuratorFactory;
+import com.wonders.diamond.core.curator.CuratorHandler;
+import com.wonders.diamond.core.curator.ServiceDiscovery;
 import com.wonders.diamond.core.curator.ServiceType;
+import com.wonders.diamond.core.heartbeat.DiamondHeartBeat;
+import com.wonders.diamond.core.heartbeat.DiamondHeartBeatBuilder;
+import com.wonders.diamond.core.heartbeat.RemoteClient;
+import com.wonders.diamond.core.heartbeat.listener.DiamondEventListener;
+import com.wonders.diamond.core.heartbeat.listener.DiamondEventListenerImpl;
+import com.wonders.diamond.core.heartbeat.subscribe.DiamondSubscriber;
 import com.wonders.diamond.core.init.table.TableCreator;
+import com.wonders.diamond.core.instance.DiamondInstance;
+import com.wonders.diamond.core.jdbc.SqlTemplate;
+import com.wonders.diamond.core.jdbc.factory.SqlTemplateFactory;
+import com.wonders.diamond.core.netty.DiamondService;
 import com.wonders.diamond.core.netty.NettyServer;
 
 import javax.sql.DataSource;
@@ -27,8 +39,20 @@ public class DiamondInitializer {
      */
     public static void initializeDiamond(String zkHost, ServiceType serviceType, DataSource dataSource, int port) throws SocketException, SQLException {
 
-        TableCreator.tableInit(dataSource);
-        CuratorFactory.create(zkHost, serviceType, port).addInstance();
+        SqlTemplate sqlTemplate = SqlTemplateFactory.create(dataSource);
+        TableCreator.tableInit(sqlTemplate);
+        CuratorHandler handler = CuratorFactory.create(zkHost, serviceType, port);
+        handler.addInstance();
+        ServiceDiscovery<DiamondInstance> serviceDiscovery = handler.diamondService().getServiceDiscovery();
+        DiamondSubscriber diamondSubscriber = new DiamondSubscriber();
+        DiamondEventListener listener = new DiamondEventListenerImpl(serviceDiscovery);
+        diamondSubscriber.registerListener(listener);
+        DiamondHeartBeat heartBeat = new DiamondHeartBeatBuilder().
+                builder().
+                remoteClient(new RemoteClient()).serviceDiscovery(serviceDiscovery).
+                subscriber(diamondSubscriber).
+                build();
+        heartBeat.heartBeat();
         NettyServer.initNettyServer(port, dataSource);
     }
 }

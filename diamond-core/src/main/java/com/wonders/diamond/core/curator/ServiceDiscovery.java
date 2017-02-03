@@ -1,5 +1,6 @@
 package com.wonders.diamond.core.curator;
 
+import com.wonders.diamond.core.context.DiamondContext;
 import com.wonders.diamond.core.instance.DiamondInstance;
 
 import java.io.Closeable;
@@ -24,5 +25,9 @@ public interface ServiceDiscovery<T> extends Closeable{
 
     public DiamondInstance queryInstance(String name, String id) throws Exception;
 
-    public Collection<DiamondInstance> listAll();
+    public Collection<DiamondInstance> listAll() throws Exception;
+
+    DiamondContext context();
+
+    Collection<String> queryNames() throws Exception;
 }

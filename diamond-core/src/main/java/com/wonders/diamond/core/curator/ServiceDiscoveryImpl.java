@@ -1,5 +1,7 @@
 package com.wonders.diamond.core.curator;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.wonders.diamond.core.context.DiamondContext;
 import com.wonders.diamond.core.instance.DiamondInstance;
 import com.wonders.diamond.core.serializer.JsonInstanceSerializer;
@@ -10,11 +12,13 @@ import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.utils.ZKPaths;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.Watcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -110,6 +114,11 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
         }
     }
 
+    String pathForName(String name)
+    {
+        return ZKPaths.makePath(basePath, name);
+    }
+
     private void internalDeleteService(DiamondInstance instance){
         String path = pathForInstance(instance);
         try {
@@ -150,15 +159,50 @@ public class ServiceDiscoveryImpl<T> implements ServiceDiscovery<T>{
     }
 
     @Override
-    public Collection<DiamondInstance> listAll() {
-        return null;
+    public Collection<DiamondInstance> listAll() throws Exception {
+        Collection<String> names = queryNames();
+        List<DiamondInstance> instances = Lists.newArrayList();
+        for(String name: names){
+            List<DiamondInstance> subInstances = queryForInstances(name);
+            instances.addAll(subInstances);
+        }
+        return instances;
     }
 
-    public DiamondContext getContext() {
+    @Override
+    public DiamondContext context() {
         return context;
     }
 
-    public void setDiamondContext(DiamondContext context){
-        this.context = context;
+    List<DiamondInstance> queryForInstances(String name) throws Exception
+    {
+        ImmutableList.Builder<DiamondInstance> builder = ImmutableList.builder();
+        String path = pathForName(name);
+        List<String> instanceIds;
+        try
+        {
+            instanceIds = client.getChildren().forPath(path);
+        }
+        catch ( KeeperException.NoNodeException e )
+        {
+            instanceIds = Lists.newArrayList();
+        }
+
+        for ( String id : instanceIds )
+        {
+            DiamondInstance instance = queryInstance(name, id);
+            if ( instance != null )
+            {
+                builder.add(instance);
+            }
+        }
+        return builder.build();
     }
+
+    @Override
+    public Collection<String> queryNames() throws Exception {
+        List<String> names = client.getChildren().forPath(basePath);
+        return ImmutableList.copyOf(names);
+    }
+
 }

@@ -26,7 +26,7 @@ public class DiamondServices implements Closeable{
 
     private CuratorFramework client;
 
-    private final String basePath = "/discovery/myDiamond";
+    private final String basePath = "/discovery/diamond";
 
     public DiamondServices(CuratorFramework client, ServiceType serviceType, DiamondContext context, int port) throws SocketException {
         this.client = client;
@@ -50,6 +50,10 @@ public class DiamondServices implements Closeable{
 
     public void start(){
         serviceDiscovery.start();
+    }
+
+    public ServiceDiscovery<DiamondInstance> getServiceDiscovery(){
+        return serviceDiscovery;
     }
 
     @Override

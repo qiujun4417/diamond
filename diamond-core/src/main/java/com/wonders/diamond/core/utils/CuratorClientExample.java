@@ -19,7 +19,7 @@ public class CuratorClientExample {
          });
          t1.start();
          try {
-             Thread.sleep(20000);
+             Thread.sleep(2000000);
          } catch (InterruptedException e) {
              e.printStackTrace();
          }

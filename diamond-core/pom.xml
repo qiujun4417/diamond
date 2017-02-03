@@ -34,7 +34,7 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.0.23</version>
-            <scope>test</scope>
+            <!--<scope>runtime</scope>-->
         </dependency>
 
         <dependency>

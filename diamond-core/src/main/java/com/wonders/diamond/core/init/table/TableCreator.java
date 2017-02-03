@@ -11,7 +11,7 @@ import java.sql.SQLException;
  */
 public class TableCreator {
 
-    public static void tableInit(DataSource dataSource) throws SQLException {
+    public static void tableInit(SqlTemplate sqlTemplate) throws SQLException {
         String createTableA = "CREATE TABLE IF NOT EXISTS tb_diamond_app(" +
                 "appId varchar(32) not null primary key, \n" +
                 "appName varchar(40) NOT NULL, \n" +
@@ -24,7 +24,6 @@ public class TableCreator {
                 "configKey varchar(100) not null, \n" +
                 "createTime datetime NOT NULL default NOW(), \n" +
                 "updateTime datetime NOT NULL default NOW())";
-        SqlTemplate sqlTemplate = SqlTemplateFactory.create(dataSource);
         sqlTemplate.createTable(createTableA);
         sqlTemplate.createTable(createTableB);
     }

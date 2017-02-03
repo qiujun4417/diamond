@@ -36,10 +36,15 @@ public class DiamondHttpHandler extends ChannelInboundHandlerAdapter {
                 return;
             }
             ByteBuf buf = request.content();
-            int readable = buf.readableBytes();
-            byte[] bytes = new byte[readable];
-            buf.readBytes(bytes);
-            String contentStr = UriUtils.decode(new String(bytes,"UTF-8"),"UTF-8");
+            String contentStr = null;
+            if(HttpMethod.GET.equals(request.getMethod())){
+
+            }else if(HttpMethod.POST.equals(request.getMethod())){
+                int readable = buf.readableBytes();
+                byte[] bytes = new byte[readable];
+                buf.readBytes(bytes);
+                contentStr = UriUtils.decode(new String(bytes,"UTF-8"),"UTF-8");
+            }
             DiamondRequest diamondRequest = JsonConvertor.toObject(contentStr, DiamondRequest.class);
             ctx.fireChannelRead(diamondRequest);
         }

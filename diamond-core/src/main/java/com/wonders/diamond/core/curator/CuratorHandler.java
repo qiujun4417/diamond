@@ -13,4 +13,7 @@ public interface CuratorHandler {
     void removeInstance();
 
     DiamondContext context();
+
+    DiamondServices diamondService();
+
 }

@@ -44,12 +44,6 @@ public class CuratorFactory {
      */
     private static CuratorFramework createClient(String zkHost){
         ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(1000, Integer.MAX_VALUE);
-//        CuratorFramework client = CuratorFrameworkFactory.builder()
-//                .connectString(zkHost)
-//                .retryPolicy(retryPolicy).connectionTimeoutMs(3000)
-//                .sessionTimeoutMs(2000)
-//                .canBeReadOnly(true)
-//                .build();
         CuratorFramework client = CuratorFrameworkFactory.newClient(zkHost, 2000, 3000, retryPolicy);
         client.start();
         return client;
