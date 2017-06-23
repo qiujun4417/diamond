@@ -1,5 +1,6 @@
 package com.wonders.diamond.core.init;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.wonders.diamond.core.curator.CuratorFactory;
 import com.wonders.diamond.core.curator.CuratorHandler;
 import com.wonders.diamond.core.curator.ServiceDiscovery;
@@ -54,5 +55,32 @@ public class DiamondInitializer {
                 build();
         heartBeat.heartBeat();
         NettyServer.initNettyServer(port, dataSource);
+    }
+
+    public static void main(String[] args){
+
+        try {
+            DruidDataSource druidDataSource = new DruidDataSource();
+            druidDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+            druidDataSource.setUrl("jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull&useSSL=false");
+            druidDataSource.setUsername("root");
+            druidDataSource.setPassword("3202547c");
+            druidDataSource.setFilters("stat");
+            druidDataSource.setInitialSize(10);
+            druidDataSource.setMinIdle(1);
+            druidDataSource.setMaxActive(200);
+            druidDataSource.setMaxWait(60000L);
+            druidDataSource.setTimeBetweenEvictionRunsMillis(60000L);
+            druidDataSource.setMinEvictableIdleTimeMillis(300000L);
+            druidDataSource.setValidationQuery("SELECT 1");
+            druidDataSource.setTestWhileIdle(true);
+            druidDataSource.setTestOnBorrow(true);
+            druidDataSource.setTestOnReturn(false);
+            initializeDiamond("127.0.0.1:2181", ServiceType.CLIENT, druidDataSource, 3997);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 }

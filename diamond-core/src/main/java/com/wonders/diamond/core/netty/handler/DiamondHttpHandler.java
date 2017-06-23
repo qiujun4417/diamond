@@ -58,6 +58,12 @@ public class DiamondHttpHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+//        ctx.
+        ctx.fireChannelReadComplete();
+    }
+
     private void writeMessage(ChannelHandlerContext ctx, HttpResponseStatus status){
         BaseException exception = new BaseException(1000, status.toString());
         String str = JsonConvertor.toJson(exception);

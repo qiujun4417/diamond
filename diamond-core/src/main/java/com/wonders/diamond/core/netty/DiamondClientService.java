@@ -15,6 +15,9 @@ public class DiamondClientService implements DiamondService{
 
     @Override
     public DiamondResponse handle(DiamondRequest diamondRequest) {
-        return null;
+        DiamondResponse response = new DiamondResponse();
+        response.setCode(10);
+        response.setMsg("success");
+        return response;
     }
 }
